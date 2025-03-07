@@ -1,0 +1,85 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #1a1a1a;
+}
+
+#board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr); /* 10 columnas proporcionales */
+    width: 90vmin;  /* 90% del tamaño mínimo de la pantalla */
+    height: 90vmin; /* Mantiene el tablero cuadrado */
+    max-width: 500px; /* Límite para pantallas grandes */
+    max-height: 500px;
+    background-color: #6d71b5; /* Fondo por defecto como emptySquare */
+}
+
+.boardInfo {
+    display: flex;
+    justify-content: space-between;
+    width: 90vmin;
+    max-width: 500px;
+    margin-top: 10px;
+    font-size: clamp(16px, 4vw, 25px); /* Tamaño adaptable */
+    color: white;
+}
+
+#start {
+    background-color: #f35a69;
+    border: none;
+    color: white;
+    padding: 5px 15px;
+    font-size: clamp(14px, 3vw, 25px); /* Botón adaptable */
+    cursor: pointer;
+}
+
+#scoreBoard {
+    display: inline-flex;
+    min-width: 40px;
+}
+
+#gameOver {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: red;
+    font-size: clamp(20px, 6vw, 40px); /* Texto adaptable */
+    display: none;
+}
+
+.square {
+    aspect-ratio: 1; /* Mantiene las celdas cuadradas */
+}
+
+.emptySquare {
+    background-color: #6d71b5;
+}
+
+.snakeSquare {
+    background-color: #e3e773;
+    border: 1px solid #000;
+}
+
+.foodSquare {
+    background-color: #55e7e7;
+    border: 1px solid #000;
+}
+
+/* Ajustes para pantallas pequeñas */
+@media (max-width: 480px) {
+    #board {
+        width: 95vmin; /* Más ancho en móviles pequeños */
+        height: 95vmin;
+    }
+}
