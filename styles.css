@@ -12,40 +12,52 @@ body {
     justify-content: center;
     min-height: 100vh;
     background-color: #1a1a1a;
+    color: white;
+}
+
+#startScreen {
+    text-align: center;
+}
+
+#startScreen h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+}
+
+#startScreen p {
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+}
+
+#difficultySelection button, #pause, #restart {
+    background-color: #f35a69;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin: 5px;
 }
 
 #board {
     display: grid;
-    grid-template-columns: repeat(10, 1fr); /* 10 columnas proporcionales */
-    width: 90vmin;  /* 90% del tamaño mínimo de la pantalla */
-    height: 90vmin; /* Mantiene el tablero cuadrado */
-    max-width: 500px; /* Límite para pantallas grandes */
+    grid-template-columns: repeat(10, 1fr);
+    width: 90vmin;
+    height: 90vmin;
+    max-width: 500px;
     max-height: 500px;
-    background-color: #6d71b5; /* Fondo por defecto como emptySquare */
+    background-color: #6d71b5;
+    border: 2px solid #fff;
 }
 
 .boardInfo {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     width: 90vmin;
     max-width: 500px;
     margin-top: 10px;
-    font-size: clamp(16px, 4vw, 25px); /* Tamaño adaptable */
-    color: white;
-}
-
-#start {
-    background-color: #f35a69;
-    border: none;
-    color: white;
-    padding: 5px 15px;
-    font-size: clamp(14px, 3vw, 25px); /* Botón adaptable */
-    cursor: pointer;
-}
-
-#scoreBoard {
-    display: inline-flex;
-    min-width: 40px;
+    font-size: clamp(16px, 4vw, 25px);
 }
 
 #gameOver {
@@ -54,12 +66,13 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     color: red;
-    font-size: clamp(20px, 6vw, 40px); /* Texto adaptable */
+    font-size: clamp(20px, 6vw, 40px);
     display: none;
 }
 
 .square {
-    aspect-ratio: 1; /* Mantiene las celdas cuadradas */
+    aspect-ratio: 1;
+    transition: background-color 0.2s ease;
 }
 
 .emptySquare {
@@ -69,17 +82,30 @@ body {
 .snakeSquare {
     background-color: #e3e773;
     border: 1px solid #000;
+    animation: snakeAnimation 0.3s infinite;
+}
+
+@keyframes snakeAnimation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
 }
 
 .foodSquare {
     background-color: #55e7e7;
     border: 1px solid #000;
+    animation: foodAnimation 1s infinite;
 }
 
-/* Ajustes para pantallas pequeñas */
+@keyframes foodAnimation {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
 @media (max-width: 480px) {
     #board {
-        width: 95vmin; /* Más ancho en móviles pequeños */
+        width: 95vmin;
         height: 95vmin;
     }
 }

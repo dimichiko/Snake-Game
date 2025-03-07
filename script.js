@@ -1,12 +1,33 @@
 // HTML Elements
 const board = document.getElementById('board');
 const scoreBoard = document.getElementById('scoreBoard');
-const startButton = document.getElementById('start');
+const highScoreBoard = document.getElementById('highScoreBoard');
+const levelDisplay = document.getElementById('level');
+const easyButton = document.getElementById('easy');
+const mediumButton = document.getElementById('medium');
+const hardButton = document.getElementById('hard');
+const pauseButton = document.getElementById('pause');
+const restartButton = document.getElementById('restart');
 const gameOverSign = document.getElementById('gameOver');
+const startScreen = document.getElementById('startScreen');
+const gameScreen = document.getElementById('gameScreen');
+const timerDisplay = document.getElementById('timer');
+const foodSound = document.getElementById('foodSound');
+const gameOverSound = document.getElementById('gameOverSound');
 
 // Game settings
 const boardSize = 10;
-const gameSpeed = 100;
+const initialGameSpeeds = {
+    easy: 200,
+    medium: 150,
+    hard: 100
+};
+const speedIncrease = 5;
+const levels = {
+    easy: [5, 10, 15, 20],
+    medium: [3, 6, 9, 12],
+    hard: [2, 4, 6, 8]
+};
 const squareTypes = {
     emptySquare: 0,
     snakeSquare: 1,
@@ -22,51 +43,54 @@ const directions = {
 // Game variables
 let snake;
 let score;
+let highScore = localStorage.getItem('highScore') || 0;
 let direction;
 let boardSquares;
 let emptySquares;
 let moveInterval;
+let isPaused = false;
+let startTime;
+let difficulty;
+let currentLevel = 1;
 
 const drawSnake = () => {
-    snake.forEach( square => drawSquare(square, 'snakeSquare'));
+    snake.forEach(square => drawSquare(square, 'snakeSquare'));
 }
 
-// Rellena cada cuadrado del tablero
-// @params 
-// square: posicion del cuadrado,
-// type: tipo de cuadrado (emptySquare, snakeSquare, foodSquare)
 const drawSquare = (square, type) => {
-    const [ row, column ] = square.split('');
+    const [row, column] = square.split('');
     boardSquares[row][column] = squareTypes[type];
     const squareElement = document.getElementById(square);
     squareElement.setAttribute('class', `square ${type}`);
 
-    if(type === 'emptySquare') {
+    if (type === 'emptySquare') {
         emptySquares.push(square);
     } else {
-        if(emptySquares.indexOf(square) !== -1) {
+        if (emptySquares.indexOf(square) !== -1) {
             emptySquares.splice(emptySquares.indexOf(square), 1);
         }
     }
 }
 
 const moveSnake = () => {
+    if (isPaused) return;
+
     const newSquare = String(
         Number(snake[snake.length - 1]) + directions[direction])
         .padStart(2, '0');
     const [row, column] = newSquare.split('');
 
-
-    if( newSquare < 0 || 
-        newSquare > boardSize * boardSize  ||
+    if (newSquare < 0 ||
+        newSquare > boardSize * boardSize ||
         (direction === 'ArrowRight' && column == 0) ||
         (direction === 'ArrowLeft' && column == 9 ||
-        boardSquares[row][column] === squareTypes.snakeSquare) ) {
+            boardSquares[row][column] === squareTypes.snakeSquare)) {
         gameOver();
     } else {
         snake.push(newSquare);
-        if(boardSquares[row][column] === squareTypes.foodSquare) {
+        if (boardSquares[row][column] === squareTypes.foodSquare) {
             addFood();
+            foodSound.play();
         } else {
             const emptySquare = snake.shift();
             drawSquare(emptySquare, 'emptySquare');
@@ -78,13 +102,30 @@ const moveSnake = () => {
 const addFood = () => {
     score++;
     updateScore();
+    checkLevelUp();
     createRandomFood();
 }
 
+const checkLevelUp = () => {
+    const levelThresholds = levels[difficulty];
+    if (levelThresholds && score >= levelThresholds[currentLevel - 1]) {
+        currentLevel++;
+        levelDisplay.innerText = currentLevel;
+        clearInterval(moveInterval);
+        moveInterval = setInterval(moveSnake, initialGameSpeeds[difficulty] - (speedIncrease * currentLevel));
+    }
+}
+
 const gameOver = () => {
+    gameOverSound.play();
     gameOverSign.style.display = 'block';
-    clearInterval(moveInterval)
+    clearInterval(moveInterval);
     startButton.disabled = false;
+    if (score > highScore) {
+        highScore = score;
+        localStorage.setItem('highScore', highScore);
+        highScoreBoard.innerText = highScore;
+    }
 }
 
 const setDirection = newDirection => {
@@ -94,16 +135,19 @@ const setDirection = newDirection => {
 const directionEvent = key => {
     switch (key.code) {
         case 'ArrowUp':
-            direction != 'ArrowDown' && setDirection(key.code)
+            direction != 'ArrowDown' && setDirection(key.code);
             break;
         case 'ArrowDown':
-            direction != 'ArrowUp' && setDirection(key.code)
+            direction != 'ArrowUp' && setDirection(key.code);
             break;
         case 'ArrowLeft':
-            direction != 'ArrowRight' && setDirection(key.code)
+            direction != 'ArrowRight' && setDirection(key.code);
             break;
         case 'ArrowRight':
-            direction != 'ArrowLeft' && setDirection(key.code)
+            direction != 'ArrowLeft' && setDirection(key.code);
+            break;
+        case 'Space':
+            togglePause();
             break;
     }
 }
@@ -115,12 +159,13 @@ const createRandomFood = () => {
 
 const updateScore = () => {
     scoreBoard.innerText = score;
+    highScoreBoard.innerText = highScore;
 }
 
 const createBoard = () => {
-    boardSquares.forEach( (row, rowIndex) => {
-        row.forEach( (column, columnndex) => {
-            const squareValue = `${rowIndex}${columnndex}`;
+    boardSquares.forEach((row, rowIndex) => {
+        row.forEach((column, columnIndex) => {
+            const squareValue = `${rowIndex}${columnIndex}`;
             const squareElement = document.createElement('div');
             squareElement.setAttribute('class', 'square emptySquare');
             squareElement.setAttribute('id', squareValue);
@@ -135,21 +180,43 @@ const setGame = () => {
     score = snake.length;
     direction = 'ArrowRight';
     boardSquares = Array.from(Array(boardSize), () => new Array(boardSize).fill(squareTypes.emptySquare));
-    console.log(boardSquares);
     board.innerHTML = '';
     emptySquares = [];
     createBoard();
+    startTime = Date.now();
+    updateTimer();
+    currentLevel = 1;
+    levelDisplay.innerText = currentLevel;
 }
 
-const startGame = () => {
+const startGame = (selectedDifficulty) => {
+    difficulty = selectedDifficulty;
+    startScreen.style.display = 'none';
+    gameScreen.style.display = 'block';
     setGame();
     gameOverSign.style.display = 'none';
-    startButton.disabled = true;
     drawSnake();
     updateScore();
     createRandomFood();
     document.addEventListener('keydown', directionEvent);
-    moveInterval = setInterval( () => moveSnake(), gameSpeed);
+    moveInterval = setInterval(() => moveSnake(), initialGameSpeeds[difficulty]);
+    setInterval(updateTimer, 1000);
 }
 
-startButton.addEventListener('click', startGame);
+const togglePause = () => {
+    isPaused = !isPaused;
+    pauseButton.innerText = isPaused ? 'Resume' : 'Pause';
+}
+
+const updateTimer = () => {
+    if (!isPaused) {
+        const elapsedTime = Math.floor((Date.now() - startTime) / 1000);
+        timerDisplay.innerText = elapsedTime;
+    }
+}
+
+easyButton.addEventListener('click', () => startGame('easy'));
+mediumButton.addEventListener('click', () => startGame('medium'));
+hardButton.addEventListener('click', () => startGame('hard'));
+pauseButton.addEventListener('click', togglePause);
+restartButton.addEventListener('click', () => startGame(difficulty));
