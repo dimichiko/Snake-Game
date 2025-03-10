@@ -46,12 +46,12 @@ A classic Snake game built with JavaScript, HTML, and CSS. Control the snake to 
 - Implemented collision detection and game-over conditions.
 - Learned to handle keyboard events for smooth snake movement.
 - Optimized the game loop for better performance on different devices.
-- 
+  
 ## Future Improvements
 - Add mobile touch controls.
 - Include more levels with additional challenges (e.g., obstacles).
 - Enhance the UI with animations and better styling.
-- 
+  
 ## Contributing
 Feel free to fork this repository and submit pull requests with improvements or bug fixes.
 
