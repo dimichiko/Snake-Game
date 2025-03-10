@@ -53,15 +53,15 @@ A classic Snake game built with JavaScript, HTML, and CSS. Control the snake to 
 - Enhance the UI with animations and better styling.
   
 ## Contributing
-Feel free to fork this repository and submit pull requests with improvements or bug fixes.
+You can fix this repository and submit pull requests with improvements or bug fixes.
 
 ## License
 This project is licensed under the MIT License.
 
 ## Author
-Dimitris Vamvoukas
-GitHub: dimichiko
-Email: ianvamvoukas1230@.com
+- Dimitris Vamvoukas
+- GitHub: dimichiko
+- Email: ianvamvoukas1230@gmail.com
 
 
 
