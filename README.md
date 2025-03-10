@@ -29,12 +29,12 @@ A classic Snake game built with JavaScript, HTML, and CSS. Control the snake to 
 - Press Spacebar to pause/resume the game.
 - Avoid hitting the walls or the snake's own body to keep playing.
 - Restart the game using the "Restart" button after a game over.
-- 
+
 ## Technologies Used
 - JavaScript: Game logic, movement, and event handling.
 - HTML5: Game board structure.
 - CSS3: Styling for the game board and UI elements.
-- 
+
 ## Project Structure
 - index.html: Main HTML file with the game structure.
 - style.css: Styles for the game board, snake, food, and UI.
